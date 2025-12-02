@@ -1,8 +1,12 @@
 package com.xDaoud.realtime_chat_app.model;
 
+
 public class ChatMessage {
-    private String sender;
+    private Long id;
     private String content;
+    private User senderUser;
+    private User receiverUser;
+    private ChatRoom chatRoom;
     private MessageType messageType;
 
     public enum MessageType {
@@ -11,16 +15,9 @@ public class ChatMessage {
 
     public ChatMessage() {
     }
-    public ChatMessage(String sender, String content, MessageType type) {
-        this.sender = sender;
+    public ChatMessage( String content, MessageType type) {
         this.content = content;
         this.messageType = type;
-    }
-    public String getSender() {
-        return sender;
-    }
-    public void setSender(String sender) {
-        this.sender = sender;
     }
     public String getContent() {
         return content;
