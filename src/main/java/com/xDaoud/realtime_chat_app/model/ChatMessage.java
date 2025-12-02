@@ -1,11 +1,16 @@
 package com.xDaoud.realtime_chat_app.model;
 
+import jakarta.persistence.*;
 
+@Entity
 public class ChatMessage {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String content;
+    @ManyToOne
     private User senderUser;
-    private User receiverUser;
+    @ManyToOne
     private ChatRoom chatRoom;
     private MessageType messageType;
 

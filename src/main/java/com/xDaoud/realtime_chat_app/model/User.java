@@ -1,10 +1,21 @@
 package com.xDaoud.realtime_chat_app.model;
 
+import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "users")
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String username;
     private String sessionId;
+
+    @ManyToMany(mappedBy = "participants")
+    private Set<ChatRoom> chatRooms = new HashSet<>();
 
     public  User(String username, String sessionId) {
         this.username = username;

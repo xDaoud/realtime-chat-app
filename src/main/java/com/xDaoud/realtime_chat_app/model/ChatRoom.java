@@ -1,22 +1,34 @@
 package com.xDaoud.realtime_chat_app.model;
 
+import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+@Entity
 public class ChatRoom {
+    @Id
+    @GeneratedValue
     private long id;
     private String name;
     private RoomType roomType;
-    private Set<User> users;
+    @ManyToMany
+    @JoinTable (
+            name = "user_chat_rooms",
+            joinColumns = @JoinColumn (name = "chat_room_id"),
+            inverseJoinColumns = @JoinColumn (name = "user_id")
+    )
+    private Set<User> participants = new HashSet<>();
 
     public enum RoomType {
         DIRECT, GROUP, CHANNEL
     }
 
+    public ChatRoom() {}
+
     public ChatRoom(String name, RoomType roomType, Set<User> users) {
         this.name = name;
         this.roomType = roomType;
-        this.users = users;
+        this.participants = users;
     }
     public long getId() {
         return id;
@@ -36,10 +48,10 @@ public class ChatRoom {
     public void setRoomType(RoomType roomType) {
         this.roomType = roomType;
     }
-    public Set<User> getUsers() {
-        return new HashSet<>(users);
+    public Set<User> getParticipants() {
+        return new HashSet<>(participants);
     }
-    public void setUsers(Set<User> users) {
-        this.users = users;
+    public void setParticipants(Set<User> participants) {
+        this.participants = participants;
     }
 }
