@@ -1,5 +1,6 @@
 package com.xDaoud.realtime_chat_app.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,6 +18,7 @@ public class ChatRoom {
             joinColumns = @JoinColumn (name = "chat_room_id"),
             inverseJoinColumns = @JoinColumn (name = "user_id")
     )
+    @JsonIgnore
     private Set<User> participants = new HashSet<>();
 
     public enum RoomType {
@@ -29,6 +31,12 @@ public class ChatRoom {
         this.name = name;
         this.roomType = roomType;
         this.participants = users;
+    }
+
+    public ChatRoom(String name) {
+        this.name = name;
+        this.roomType = RoomType.DIRECT;
+        this.participants = new HashSet<>();
     }
     public long getId() {
         return id;

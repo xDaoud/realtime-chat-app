@@ -1,5 +1,6 @@
 package com.xDaoud.realtime_chat_app.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -15,6 +16,7 @@ public class User {
     private String sessionId;
 
     @ManyToMany(mappedBy = "participants")
+    @JsonIgnore
     private Set<ChatRoom> chatRooms = new HashSet<>();
 
     public  User(String username, String sessionId) {
@@ -40,5 +42,13 @@ public class User {
     }
     public void setId(long id) {
         this.id = id;
+    }
+
+    public Set<ChatRoom> getChatRooms() {
+        return chatRooms;
+    }
+
+    public void setChatRooms(Set<ChatRoom> chatRooms) {
+        this.chatRooms = chatRooms;
     }
 }

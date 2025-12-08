@@ -11,6 +11,7 @@ public class ChatMessage {
     @ManyToOne
     private User senderUser;
     @ManyToOne
+    @JoinColumn(nullable = true)
     private ChatRoom chatRoom;
     private MessageType messageType;
 
@@ -36,5 +37,23 @@ public class ChatMessage {
     }
     public void setMessageType(MessageType messageType) {
         this.messageType = messageType;
+    }
+    public ChatRoom getChatRoom() {
+        return chatRoom;
+    }
+    public void setChatRoom(ChatRoom chatRoom) {
+        this.chatRoom = chatRoom;
+    }
+    public User getSenderUser() {
+        return senderUser;
+    }
+    public void setSenderUser(User senderUser) {
+        this.senderUser = senderUser;
+    }
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
     }
 }
