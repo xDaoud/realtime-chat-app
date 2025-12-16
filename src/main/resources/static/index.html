@@ -29,6 +29,23 @@
             background: #fafafa;
         }
 
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .timestamp {
+            font-size: 0.8em;
+            color: #666;
+            font-style: italic;
+        }
+
+        .message.join .timestamp,
+        .message.leave .timestamp {
+            margin-left: 10px;
+        }
+
         .message {
             margin-bottom: 15px;
             padding: 10px 15px;
@@ -159,17 +176,28 @@
         }
     }
 
-    // Display a message
     function showMessage(message) {
         const messageArea = document.getElementById('messageArea');
         const messageDiv = document.createElement('div');
 
         messageDiv.className = 'message ' + message.messageType.toLowerCase();
 
+        const timestamp = new Date(message.createdAt).toLocaleTimeString();
+
         if (message.messageType === 'CHAT') {
-            messageDiv.innerHTML = `<strong>${message.senderUser?.username || 'Unknown'}:</strong> ${message.content}`;
+            messageDiv.innerHTML = `
+            <div class="message-header">
+                <strong>${message.senderUser?.username || 'Unknown'}</strong>
+                <span class="timestamp">${timestamp}</span>
+            </div>
+            <div class="message-content">${message.content}</div>
+        `;
         } else {
-            messageDiv.textContent = message.content;
+            messageDiv.innerHTML = `
+            <div class="system-message">
+                ${message.content} <span class="timestamp">${timestamp}</span>
+            </div>
+        `;
         }
 
         messageArea.appendChild(messageDiv);
