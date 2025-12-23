@@ -28,7 +28,7 @@ public class ChatMessage {
     public ChatMessage() {
         this.createdAt = LocalDateTime.now();
     }
-    public ChatMessage( String content, MessageType type) {
+    public ChatMessage(String content, MessageType type) {
         this.content = content;
         this.messageType = type;
         this.createdAt = LocalDateTime.now();
