@@ -7,7 +7,9 @@ import com.xDaoud.realtime_chat_app.repository.ChatMessageRepository;
 import com.xDaoud.realtime_chat_app.repository.ChatRoomRepository;
 import com.xDaoud.realtime_chat_app.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -48,13 +50,14 @@ public class ChatController {
         chatMessage.setSenderUser(sender);
 
         chatMessage.setMessageType(ChatMessage.MessageType.CHAT);
-
-        ChatRoom defaultRoom = chatRoomRepository.findByName("General");
-        if (defaultRoom == null) {
-            defaultRoom = new ChatRoom("General");
-            defaultRoom = chatRoomRepository.save(defaultRoom);
+        if(chatMessage.getChatRoom() != null) {
+            ChatRoom defaultRoom = chatRoomRepository.findByName("General");
+            if (defaultRoom == null) {
+                defaultRoom = new ChatRoom("General");
+                defaultRoom = chatRoomRepository.save(defaultRoom);
+            }
+            chatMessage.setChatRoom(defaultRoom);
         }
-        chatMessage.setChatRoom(defaultRoom);
 
         return chatMessageRepository.save(chatMessage);
     }
@@ -80,6 +83,36 @@ public class ChatController {
         joinMessage.setContent(username + " joined");
         joinMessage.setMessageType(ChatMessage.MessageType.JOIN);
         joinMessage.setSenderUser(user);
+
+        return chatMessageRepository.save(joinMessage);
+    }
+
+    @MessageMapping("/chat.joinRoom/{roomName}")
+    @SendTo("topic/room/{roomName}")
+    public ChatMessage joinRoom(@DestinationVariable String roomName, @Payload String username, SimpMessageHeaderAccessor headerAccessor) {
+        ChatRoom chatRoom = chatRoomRepository.findByName(roomName);
+        if(chatRoom == null) {
+            chatRoom = new ChatRoom(roomName);
+            chatRoom = chatRoomRepository.save(chatRoom);
+        }
+
+        String sessionId = headerAccessor.getSessionId();
+        User user = userRepository.findBySessionId(sessionId);
+        if(user == null) {
+            user = new User(username, sessionId);
+            user = userRepository.save(user);
+        }
+
+        if(!chatRoom.getParticipants().contains(user)) {
+            chatRoom.getParticipants().add(user);
+            chatRoomRepository.save(chatRoom);
+        }
+
+        ChatMessage joinMessage = new ChatMessage();
+        joinMessage.setContent(username + " joined #" + roomName);
+        joinMessage.setSenderUser(user);
+        joinMessage.setMessageType(ChatMessage.MessageType.JOIN);
+        joinMessage.setChatRoom(chatRoom);
 
         return chatMessageRepository.save(joinMessage);
     }

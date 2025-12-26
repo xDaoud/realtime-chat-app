@@ -296,7 +296,10 @@
                 content: content,
                 senderUser: { username: username },
                 messageType: 'CHAT',
-                room: currentRoom
+                chatRoom: {
+                    name: currentRoom,
+                    id: null
+                }
             };
 
             stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));

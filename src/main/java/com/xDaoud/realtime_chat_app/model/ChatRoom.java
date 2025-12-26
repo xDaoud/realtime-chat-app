@@ -8,8 +8,8 @@ import java.util.Set;
 @Entity
 public class ChatRoom {
     @Id
-    @GeneratedValue
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
     private RoomType roomType;
     @ManyToMany
@@ -38,10 +38,10 @@ public class ChatRoom {
         this.roomType = RoomType.DIRECT;
         this.participants = new HashSet<>();
     }
-    public long getId() {
+    public Long getId() {
         return id;
     }
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
     public String getName() {
